@@ -11,6 +11,8 @@ __all__ = [
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
+class TokenSerializer(serializers.Serializer):
+    token = serializers.CharField()
 
 class PasswordTokenSerializer(serializers.Serializer):
     password = serializers.CharField(label=_("Password"), style={'input_type': 'password'})
