@@ -225,3 +225,17 @@ class AuthTestCase(APITestCase, HelperMixin):
         # now the other two signals should have been called
         self.assertTrue(mock_post_password_reset.called)
         self.assertTrue(mock_pre_password_reset.called)
+
+class ConfirmTokenTestCase(APITestCase, HelperMixin):
+    def setUp(self):
+        self.setUpUrls()
+        self.user = User.objects.create_user("user1", "user1@mail.com", "secret1")
+        self.token = ResetPasswordToken.objects.create(user=self.user)
+
+    def test_that_token_is_confirmed(self):
+        response = self.rest_do_confirm_reset_token(token=self.token.key)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_that_invalid_token_is_not_confirmed(self):
+        response = self.rest_do_confirm_reset_token(token=self.token.key + 'invalidchars')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
